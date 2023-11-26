@@ -5,7 +5,7 @@
     font-weight: 400;
     font-display: auto;
     unicode-range: U+000-5FF;
-    src: url(../../public/fonts/SFUIText.ttf);
+    src: url(/fonts/SFUIText.ttf);
 }
 @font-face {
     font-family: "SF UI Text";
@@ -13,7 +13,7 @@
     font-display: auto;
     font-style: normal;
     unicode-range: U+000-5FF;
-    src: url(../../public/fonts/SFUIText-Semibold.ttf);
+    src: url(/fonts/SFUIText-Semibold.ttf);
 }
 @font-face {
     font-family: "SF Pro Display";
@@ -21,7 +21,7 @@
     font-display: auto;
     font-style: normal;
     unicode-range: U+000-5FF;
-    src: url(../../public/fonts/SFProDisplay-Regular.ttf);
+    src: url(/fonts/SFProDisplay-Regular.ttf);
 }
 @font-face {
     font-family: "SF Pro Display";
@@ -29,7 +29,7 @@
     font-display: auto;
     font-style: normal;
     unicode-range: U+000-5FF;
-    src: url(../../public/fonts/SFProDisplay-Medium.ttf);
+    src: url(/fonts/SFProDisplay-Medium.ttf);
 }
 @font-face {
     font-family: "SF Pro Display";
@@ -37,7 +37,7 @@
     font-display: auto;
     font-style: normal;
     unicode-range: U+000-5FF;
-    src: url(../../public/fonts/SFProDisplay-Semibold.ttf);
+    src: url(/fonts/SFProDisplay-Semibold.ttf);
 }
 
 #app {

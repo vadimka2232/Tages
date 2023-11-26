@@ -1,53 +1,75 @@
 <template>
     <div class="product-item">
-        <span class="product-item_action">Скидка</span>
+        <span class="product-item_action" v-if="productData.price.old_price"
+            >Скидка</span
+        >
+        <span v-else class="product-item-action-none"></span>
         <div class="product-item_info">
             <img
-                src="../../image/lamp.png"
-                alt=""
+                :src="productData.image.url"
+                alt="product"
                 class="product-item_info_image"
             />
-            <span class="product-item_info_article">L422WH</span>
-            <h3 class="product-item_info_title">Ручка дверная</h3>
+            <span class="product-item_info_article" v-if="productData.code">{{
+                productData.code
+            }}</span>
+            <span class="product-item_info_article-none" v-else></span>
+            <h3 class="product-item_info_title">{{ productData.name }}</h3>
             <div class="product-item_cost">
                 <div class="product-item_cost_inner">
-                    <span v-if="true" class="product-item_cost_inner_action">
-                        400₽
-                    </span>
-                    <span class="product-item_cost_inner_subtitle">355</span>
+                    <span
+                        class="product-item_cost_inner_action"
+                        v-if="productData.price.old_price"
+                        >{{ productData.price.old_price }}</span
+                    >
+                    <span class="product-item_cost_inner_subtitle">{{
+                        productData.price.current_price
+                    }}</span>
                 </div>
                 <div class="product-item_cost_box">
-                    <img src="../../image/cart.svg" alt="add" />
-                    <img src="../../image/heart.svg" alt="like" />
+                    <img src="image/cart.svg" alt="add" />
+                    <img src="image/heart.svg" alt="like" />
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-export default {};
+<script setup lang="ts">
+import { defineProps } from "vue";
+import type { Product } from "../../types";
+
+const { productData } = defineProps<{
+    productData: Product;
+}>();
 </script>
 
 <style>
 .product-item {
-    border: 1px solid lightgray;
+    border: 1px solid #eeeeee;
     width: 336px;
     display: inline-block;
 }
 .product-item_action {
     display: inline-block;
-    margin-top: 10px;
-    padding: 5px;
+    margin-top: 8px;
+    padding: 5px 16px 7px 17px;
     background: var(--Attention, #eb5757);
-
     color: var(--White, #fff);
     font-family: SF Pro Display;
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
-    line-height: 130%; /* 18.2px */
+    line-height: 12px;
     letter-spacing: 0.14px;
+}
+.product-item-action-none {
+    height: 32px;
+    display: block;
+}
+.product-item_info_article-none {
+    height: 14px;
+    display: block;
 }
 .product-item_info {
     margin: 0 21px 9px 12px;
@@ -96,7 +118,6 @@ export default {};
 }
 .product-item_cost_inner {
     display: flex;
-    gap: 9px;
 }
 .product-item_cost_box {
     display: flex;
@@ -111,5 +132,6 @@ export default {};
     line-height: 140%;
     letter-spacing: 1px;
     text-decoration: Line-through;
+    margin-right: 9px;
 }
 </style>
