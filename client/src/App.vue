@@ -43,6 +43,7 @@
                                 :value="materialFilter"
                                 @change="(e: string) => (materialFilter = e)"
                             >
+                                >
                                 <a-select-option value="1"
                                     >Дерево</a-select-option
                                 >
@@ -58,7 +59,7 @@
                         v-for="product in filteredProducts"
                         :key="product.id"
                         :productData="product"
-                        @updateParent="onUpdateStatus"
+                        @updateFavorite="onUpdateFavorite"
                     />
                 </section>
             </div>
@@ -70,32 +71,25 @@
 import ProductItem from "./components/Product/ProductItem.vue";
 import NavPanel from "./components/views/NavPanel/NavPanel.vue";
 import { ref, computed, onMounted, watchEffect } from "vue";
-import type { Product, HeartsData } from "./types";
+import type { Product, HeartsData, FavoriteRecord } from "./types";
 
+const ways = ref([
+    { id: 1, way: "Главная" },
+    { id: 2, way: "Системы хранения" },
+    { id: 3, way: "Комплекты стеллажных систем" },
+]);
 const products = ref<Product[]>([]);
-const heartStatus = ref<HeartsData[]>([]);
 const priceFilter = ref("lowToHigh");
 const materialFilter = ref("2");
 
 const fetchProducts = async () => {
     const response = await fetch("./products.json");
     const data = await response.json();
-    products.value = data;
-};
-
-const fetchHearts = async () => {
-    const response = await fetch("./hearts.json");
-    const data = await response.json();
-    heartStatus.value = data;
-    localStorage.setItem("HeartsStore", JSON.stringify(heartStatus.value));
+    return data;
 };
 
 const filteredProducts = computed(() => {
     let filtered = [...products.value];
-
-    // 1. все продукты по умолчанию не в избранных, но все равно надо проверять localStorage.
-    // 2. если в localStorage продукт в избранных, то меняешь сердечко на заполненное
-    // 3. если пользователь сам добавляет продукт в избранные, меняешь localStorage
 
     // фильтр по цене
     if (priceFilter.value === "lowToHigh") {
@@ -111,37 +105,42 @@ const filteredProducts = computed(() => {
 
     return filtered;
 });
-const heartsSelected = ref([]);
-const heartsStored = localStorage.getItem("HeartsStore");
-if (heartsStored) {
-    heartsSelected.value = JSON.parse(heartsStored);
-}
 
-watchEffect(() => {
-    localStorage.setItem(
-        "heartsSelected",
-        JSON.stringify(heartsSelected.value)
-    );
-});
+const initFavorites = (products: Product[]) => {
+    const storedFavorites = localStorage.getItem("favorites");
 
-const onUpdateStatus = (id: string, statusItem: boolean) => {
-    heartsSelected.value[+id].status = statusItem;
-    localStorage.setItem(
-        "heartsSelected",
-        JSON.stringify(heartsSelected.value)
-    );
-    console.log(heartsSelected.value[+id].status);
+    if (storedFavorites) return;
+
+    let initialFavorites: FavoriteRecord[] = [];
+
+    for (const product of products) {
+        initialFavorites.push({
+            id: product.id,
+            isFavorite: false,
+        });
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(initialFavorites));
 };
 
-const ways = ref([
-    { id: 1, way: "Главная" },
-    { id: 2, way: "Системы хранения" },
-    { id: 3, way: "Комплекты стеллажных систем" },
-]);
+const onUpdateFavorite = (id: string, value: boolean) => {
+    const storedFavorites = localStorage.getItem("favorites");
+
+    if (!storedFavorites) return;
+
+    const favorites = JSON.parse(storedFavorites) as FavoriteRecord[];
+
+    const index = favorites.findIndex((item) => item.id === id);
+    favorites[index].isFavorite = value;
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+};
 
 onMounted(() => {
-    fetchProducts();
-    fetchHearts();
+    fetchProducts().then((data) => {
+        products.value = data;
+        initFavorites(data);
+    });
 });
 </script>
 
