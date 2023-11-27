@@ -5,8 +5,8 @@
                 <ul class="way-list">
                     <NavPanel
                         v-for="way in ways"
-                        v-bind:key="way"
-                        v-bind:oneWay="way"
+                        :key="way.id"
+                        :ways="way"
                         class="way-list_el"
                     />
                 </ul>
@@ -18,33 +18,39 @@
                 <section class="main_filter">
                     <div>
                         <h3 class="main_filter_title">Сортировать по:</h3>
-                        <select
-                            v-model="priceFilter"
-                            class="main_filter_select"
-                        >
-                            <option
-                                value="lowToHigh"
-                                class="main_filter_option"
+
+                        <a-space class="main_filter_select" bordered="false">
+                            <a-select
+                                style="width: 240px"
+                                :value="priceFilter"
+                                @change="(e: string) => (priceFilter = e)"
                             >
-                                Цена по возрастанию
-                            </option>
-                            <option
-                                value="highToLow"
-                                class="main_filter_option"
-                            >
-                                Цена по убыванию
-                            </option>
-                        </select>
+                                <a-select-option value="lowToHigh"
+                                    >Цена по возрастанию</a-select-option
+                                >
+                                <a-select-option value="highToLow"
+                                    >Цена по убыванию</a-select-option
+                                >
+                            </a-select>
+                        </a-space>
                     </div>
                     <div>
                         <h3 class="main_filter_title">Материал</h3>
-                        <select
-                            v-model="materialFilter"
-                            class="main_filter_select"
-                        >
-                            <option value="1">Wood</option>
-                            <option value="2">Metal</option>
-                        </select>
+
+                        <a-space class="main_filte r_select">
+                            <a-select
+                                style="width: 240px"
+                                :value="materialFilter"
+                                @change="(e: string) => (materialFilter = e)"
+                            >
+                                <a-select-option value="1"
+                                    >Дерево</a-select-option
+                                >
+                                <a-select-option value="2"
+                                    >Металл</a-select-option
+                                >
+                            </a-select>
+                        </a-space>
                     </div>
                 </section>
                 <section class="main_products">
@@ -52,6 +58,7 @@
                         v-for="product in filteredProducts"
                         :key="product.id"
                         :productData="product"
+                        @updateParent="onUpdateStatus"
                     />
                 </section>
             </div>
@@ -62,11 +69,11 @@
 <script setup lang="ts">
 import ProductItem from "./components/Product/ProductItem.vue";
 import NavPanel from "./components/views/NavPanel/NavPanel.vue";
-import SortElem from "./components/views/SortElem/SortElem.vue";
-import { ref, computed, onMounted } from "vue";
-import { Product, Material } from "./types";
+import { ref, computed, onMounted, watchEffect } from "vue";
+import type { Product, HeartsData } from "./types";
 
 const products = ref<Product[]>([]);
+const heartStatus = ref<HeartsData[]>([]);
 const priceFilter = ref("lowToHigh");
 const materialFilter = ref("2");
 
@@ -74,10 +81,21 @@ const fetchProducts = async () => {
     const response = await fetch("./products.json");
     const data = await response.json();
     products.value = data;
-    console.log(data);
 };
+
+const fetchHearts = async () => {
+    const response = await fetch("./hearts.json");
+    const data = await response.json();
+    heartStatus.value = data;
+    localStorage.setItem("HeartsStore", JSON.stringify(heartStatus.value));
+};
+
 const filteredProducts = computed(() => {
     let filtered = [...products.value];
+
+    // 1. все продукты по умолчанию не в избранных, но все равно надо проверять localStorage.
+    // 2. если в localStorage продукт в избранных, то меняешь сердечко на заполненное
+    // 3. если пользователь сам добавляет продукт в избранные, меняешь localStorage
 
     // фильтр по цене
     if (priceFilter.value === "lowToHigh") {
@@ -93,12 +111,38 @@ const filteredProducts = computed(() => {
 
     return filtered;
 });
+const heartsSelected = ref([]);
+const heartsStored = localStorage.getItem("HeartsStore");
+if (heartsStored) {
+    heartsSelected.value = JSON.parse(heartsStored);
+}
+
+watchEffect(() => {
+    localStorage.setItem(
+        "heartsSelected",
+        JSON.stringify(heartsSelected.value)
+    );
+});
+
+const onUpdateStatus = (id: string, statusItem: boolean) => {
+    heartsSelected.value[+id].status = statusItem;
+    localStorage.setItem(
+        "heartsSelected",
+        JSON.stringify(heartsSelected.value)
+    );
+    console.log(heartsSelected.value[+id].status);
+};
+
 const ways = ref([
-    { title: "Главная" },
-    { title: "Системы хранения" },
-    { title: "Комплекты стеллажных систем" },
+    { id: 1, way: "Главная" },
+    { id: 2, way: "Системы хранения" },
+    { id: 3, way: "Комплекты стеллажных систем" },
 ]);
-onMounted(fetchProducts);
+
+onMounted(() => {
+    fetchProducts();
+    fetchHearts();
+});
 </script>
 
 <style scoped>
@@ -153,15 +197,16 @@ onMounted(fetchProducts);
 .main_filter_select {
     width: 288px;
     height: 40px;
+    border-radius: 0;
 }
-.main_filter_option {
-    width: 288px;
-    height: 40px;
-}
+
 .main_products {
     display: flex;
     flex-wrap: wrap;
     margin-top: 41px;
     gap: 48px;
+}
+.ant-select-selection-item {
+    background: var(--Secondary, #f2f2f2);
 }
 </style>

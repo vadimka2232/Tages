@@ -16,7 +16,11 @@ export type Product = {
     material: number;
 };
 
-export type Material = {
+export type HeartsData = {
     id: string;
-    name: string;
+    status:boolean;
 };
+export type WayData = {
+    way: string;
+};
+

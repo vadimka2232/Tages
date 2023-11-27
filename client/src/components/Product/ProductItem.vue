@@ -27,21 +27,61 @@
                     }}</span>
                 </div>
                 <div class="product-item_cost_box">
-                    <img src="image/cart.svg" alt="add" />
-                    <img src="image/heart.svg" alt="like" />
+                    <img
+                        :src="basketImage"
+                        alt="busket"
+                        class="product-item_cost_box_busket product-item_cost_box-active"
+                        @click="switchImageBox"
+                    />
+                    <img
+                        :src="heartImage"
+                        alt="like"
+                        class="product-item_cost_box_heart product-item_cost_box-active"
+                        @click="
+                            switchImageHeart();
+                            sendCount();
+                        "
+                    />
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
-import { defineProps } from "vue";
+<script lang="ts" setup>
+import { defineProps, ref, type Ref } from "vue";
+
 import type { Product } from "../../types";
 
-const { productData } = defineProps<{
+const FILLED_HEART = "image/redHeart.svg";
+const EMPTY_HEART = "image/heart.svg";
+
+const basketImage = ref<string>("image/cart.svg");
+const heartImage = ref<string>("image/heart.svg");
+
+const { productData, isFavorite } = defineProps<{
     productData: Product;
+    isFavorite: Ref<boolean>;
 }>();
+
+const emit = defineEmits<{
+    (e: "onUpdateStatus", id: string, value: boolean): void;
+}>();
+
+const switchImageBox = () => {
+    if (basketImage.value == "image/cart.svg") {
+        basketImage.value = "image/succes.svg";
+    } else {
+        basketImage.value = "image/cart.svg";
+    }
+};
+const switchImageHeart = (isFavorite: boolean): string =>
+    isFavorite ? FILLED_HEART : EMPTY_HEART;
+
+const sendCount = () => {
+    isFavorite.value = !isFavorite.value;
+    emit("updateParent", productData.id, isFavorite.value);
+};
 </script>
 
 <style>
@@ -133,5 +173,9 @@ const { productData } = defineProps<{
     letter-spacing: 1px;
     text-decoration: Line-through;
     margin-right: 9px;
+}
+.product-item_cost_box-active:hover {
+    transform: scale(1.35);
+    transition-duration: 0.3s;
 }
 </style>

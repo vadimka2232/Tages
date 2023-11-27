@@ -1,14 +1,13 @@
 <template>
-    <li class="navigation_item">{{ oneWay.title }}</li>
+    <li class="navigation_item">{{ ways.way }}</li>
 </template>
 
-<script>
-export default {
-    props: ["oneWay"],
-    data() {
-        return {};
-    },
-};
+<script setup lang="ts">
+import { defineProps } from "vue";
+import type { WayData } from "../../../types";
+const { ways } = defineProps<{
+    ways: WayData;
+}>();
 </script>
 
 <style>
