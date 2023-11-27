@@ -28,19 +28,16 @@
                 </div>
                 <div class="product-item_cost_box">
                     <img
-                        :src="basketImage"
+                        :src="isAdded ? SUCCESS_IMAGE : CART_IMAGE"
                         alt="busket"
                         class="product-item_cost_box_busket product-item_cost_box-active"
-                        @click="switchImageBox"
+                        @click="toggleAdded"
                     />
                     <img
-                        :src="heartImage"
+                        :src="isFavorite ? FILLED_HEART : EMPTY_HEART"
                         alt="like"
                         class="product-item_cost_box_heart product-item_cost_box-active"
-                        @click="
-                            switchImageHeart();
-                            sendCount();
-                        "
+                        @click="toggleFavorite"
                     />
                 </div>
             </div>
@@ -49,39 +46,44 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, type Ref } from "vue";
+import { defineProps, onMounted, ref, type Ref } from "vue";
 
-import type { Product } from "../../types";
+import type { FavoriteRecord, Product } from "../../types";
 
 const FILLED_HEART = "image/redHeart.svg";
 const EMPTY_HEART = "image/heart.svg";
 
-const basketImage = ref<string>("image/cart.svg");
-const heartImage = ref<string>("image/heart.svg");
+const SUCCESS_IMAGE = "image/succes.svg";
+const CART_IMAGE = "image/cart.svg";
 
-const { productData, isFavorite } = defineProps<{
+const { productData } = defineProps<{
     productData: Product;
-    isFavorite: Ref<boolean>;
 }>();
 
 const emit = defineEmits<{
-    (e: "onUpdateStatus", id: string, value: boolean): void;
+    (event: "updateFavorite", id: string, value: boolean): void;
 }>();
 
-const switchImageBox = () => {
-    if (basketImage.value == "image/cart.svg") {
-        basketImage.value = "image/succes.svg";
-    } else {
-        basketImage.value = "image/cart.svg";
-    }
-};
-const switchImageHeart = (isFavorite: boolean): string =>
-    isFavorite ? FILLED_HEART : EMPTY_HEART;
+const isFavorite = ref(false);
+const isAdded = ref(false);
 
-const sendCount = () => {
+const toggleFavorite = () => {
     isFavorite.value = !isFavorite.value;
-    emit("updateParent", productData.id, isFavorite.value);
+    emit("updateFavorite", productData.id, isFavorite.value);
 };
+
+const toggleAdded = () => {
+    isAdded.value = !isAdded.value;
+};
+
+onMounted(() => {
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+        const favorites = JSON.parse(storedFavorites) as FavoriteRecord[];
+        const favorite = favorites.find((fav) => fav.id === productData.id);
+        isFavorite.value = favorite?.isFavorite || false;
+    }
+});
 </script>
 
 <style>

@@ -16,11 +16,12 @@ export type Product = {
     material: number;
 };
 
+export type FavoriteRecord = { id: string; isFavorite: boolean };
+
 export type HeartsData = {
     id: string;
-    status:boolean;
+    status: boolean;
 };
 export type WayData = {
     way: string;
 };
-
