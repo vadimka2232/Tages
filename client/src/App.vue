@@ -417,8 +417,8 @@ onMounted(() => {
 }
 @media (max-width: 380px) {
     .container {
-        max-width: 400px;
-        margin: 0 4vw;
+        max-width: 380px;
+        margin: 0 3vw;
     }
     .way-list_el {
         font-size: 10px;
@@ -444,7 +444,7 @@ onMounted(() => {
         line-height: 32px;
     }
     .product-item {
-        width: 150px;
+        width: 140px;
     }
     .ant-select {
         width: 150px;

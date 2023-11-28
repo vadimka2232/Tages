@@ -244,4 +244,23 @@ onMounted(() => {
         transform: scale(1.2);
     }
 }
+@media (max-width: 380px) {
+    .product-item_cost_box {
+        display: flex;
+        gap: 10px;
+    }
+    .product-item_info_image {
+        width: 115px;
+        height: 115px;
+    }
+    .product-item_info_title {
+        font-size: 13px;
+
+        line-height: 110%;
+        letter-spacing: 0.32px;
+    }
+    .product-item_cost_box-active:hover {
+        transform: scale(1.2);
+    }
+}
 </style>
