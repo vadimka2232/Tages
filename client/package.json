@@ -10,9 +10,10 @@
         "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
     },
     "dependencies": {
+        "@vitejs/plugin-vue": "^4.5.0",
         "ant-design-vue": "^4.0.7",
-        "framer-motion": "^10.16.5",
-        "mathjs": "^12.1.0",
+        "npm": "^10.2.4",
+        "vite": "^5.0.2",
         "vue": "^3.3.4"
     },
     "devDependencies": {
