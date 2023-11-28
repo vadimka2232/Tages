@@ -19,4 +19,8 @@ const { ways } = defineProps<{
     font-weight: 400;
     line-height: 16px;
 }
+.navigation_item::after {
+    content: "/";
+    margin-left: 10px;
+}
 </style>

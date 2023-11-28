@@ -186,6 +186,7 @@ onMounted(() => {
 .way-list {
     display: flex;
     flex-direction: row;
+    gap: 10px;
 }
 .way-list_el:last-child::after {
     display: none;
@@ -349,6 +350,13 @@ onMounted(() => {
         line-height: 14px;
         width: 115px;
     }
+    .way-list_el {
+        font-size: 11px;
+        line-height: 15px;
+        width: 60px;
+        display: flex;
+        align-items: center;
+    }
     .navigation_item::after {
         content: "/";
         margin: 0 8px;
@@ -383,6 +391,13 @@ onMounted(() => {
     .way-list {
         align-items: center;
     }
+    .way-list_el {
+        font-size: 11px;
+        line-height: 15px;
+        width: 60px;
+        display: flex;
+        align-items: center;
+    }
 
     .way-list_el:last-child {
         font-size: 10px;
@@ -391,7 +406,7 @@ onMounted(() => {
     }
     .navigation_item::after {
         content: "/";
-        margin: 0 8px;
+        margin: 0 10px;
     }
     .navigation_item {
         width: 65px;
@@ -430,7 +445,7 @@ onMounted(() => {
     .way-list_el:last-child {
         font-size: 10px;
         line-height: 14px;
-        width: 200px;
+        width: 115px;
         margin-left: 10px;
     }
     .navigation_item::after {
@@ -447,7 +462,7 @@ onMounted(() => {
         width: 140px;
     }
     .ant-select {
-        width: 150px;
+        width: 140px;
     }
 }
 </style>
