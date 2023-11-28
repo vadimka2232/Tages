@@ -17,6 +17,7 @@ export type Product = {
 };
 
 export type FavoriteRecord = { id: string; isFavorite: boolean };
+export type BasketRecord = { id: string; isAdded: boolean };
 
 export type HeartsData = {
     id: string;

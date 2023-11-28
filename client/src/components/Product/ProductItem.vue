@@ -23,7 +23,7 @@
                         >{{ productData.price.old_price }}</span
                     >
                     <span class="product-item_cost_inner_subtitle">{{
-                        productData.price.current_price
+                        cost
                     }}</span>
                 </div>
                 <div class="product-item_cost_box">
@@ -46,9 +46,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, ref, type Ref } from "vue";
-
-import type { FavoriteRecord, Product } from "../../types";
+import { defineProps, onMounted, ref } from "vue";
+import type { FavoriteRecord, Product, BasketRecord } from "../../types";
 
 const FILLED_HEART = "image/redHeart.svg";
 const EMPTY_HEART = "image/heart.svg";
@@ -59,9 +58,10 @@ const CART_IMAGE = "image/cart.svg";
 const { productData } = defineProps<{
     productData: Product;
 }>();
-
+let cost = Math.floor(productData.price.current_price);
 const emit = defineEmits<{
     (event: "updateFavorite", id: string, value: boolean): void;
+    (event: "updateBasket", id: string, value: boolean): void;
 }>();
 
 const isFavorite = ref(false);
@@ -74,14 +74,25 @@ const toggleFavorite = () => {
 
 const toggleAdded = () => {
     isAdded.value = !isAdded.value;
+    emit("updateBasket", productData.id, isAdded.value);
 };
 
 onMounted(() => {
-    const storedFavorites = localStorage.getItem("favorites");
-    if (storedFavorites) {
-        const favorites = JSON.parse(storedFavorites) as FavoriteRecord[];
-        const favorite = favorites.find((fav) => fav.id === productData.id);
-        isFavorite.value = favorite?.isFavorite || false;
+    {
+        const storedFavorites = localStorage.getItem("favorites");
+        if (storedFavorites) {
+            const favorites = JSON.parse(storedFavorites) as FavoriteRecord[];
+            const favorite = favorites.find((fav) => fav.id === productData.id);
+            isFavorite.value = favorite?.isFavorite || false;
+        }
+    }
+    {
+        const storedBasket = localStorage.getItem("basket");
+        if (storedBasket) {
+            const basket = JSON.parse(storedBasket) as BasketRecord[];
+            const basketItem = basket.find((fav) => fav.id === productData.id);
+            isAdded.value = basketItem?.isAdded || false;
+        }
     }
 });
 </script>
@@ -121,7 +132,6 @@ onMounted(() => {
 }
 .product-item_info_article {
     display: block;
-
     color: #888;
     font-family: SF UI Text;
     font-size: 10px;
@@ -160,6 +170,7 @@ onMounted(() => {
 }
 .product-item_cost_inner {
     display: flex;
+    align-items: center;
 }
 .product-item_cost_box {
     display: flex;
@@ -179,5 +190,52 @@ onMounted(() => {
 .product-item_cost_box-active:hover {
     transform: scale(1.35);
     transition-duration: 0.3s;
+}
+@media (max-width: 1024px) {
+    .product-item_info_image {
+        width: 205px;
+        height: 206px;
+    }
+}
+@media (max-width: 755px) {
+    .product-item_info_image {
+        width: 140px;
+        height: 145px;
+    }
+}
+@media (max-width: 625px) {
+    .product-item_cost_inner_action {
+        font-size: 14px;
+
+        line-height: 120%;
+
+        text-decoration: Line-through;
+        margin-right: 3px;
+    }
+    .product-item_cost_inner_subtitle {
+        font-size: 14px;
+        line-height: 120%;
+        letter-spacing: 0.32px;
+    }
+    .product-item_info_image {
+        width: 130px;
+        height: 145px;
+    }
+}
+@media (max-width: 450px) {
+    .product-item_cost_box {
+        display: flex;
+        gap: 10px;
+    }
+    .product-item_info_image {
+        width: 120px;
+        height: 145px;
+    }
+    .product-item_info_title {
+        font-size: 13px;
+
+        line-height: 110%;
+        letter-spacing: 0.32px;
+    }
 }
 </style>

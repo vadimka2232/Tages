@@ -19,9 +19,8 @@
                     <div>
                         <h3 class="main_filter_title">Сортировать по:</h3>
 
-                        <a-space class="main_filter_select" bordered="false">
+                        <a-space>
                             <a-select
-                                style="width: 240px"
                                 :value="priceFilter"
                                 @change="(e: string) => (priceFilter = e)"
                             >
@@ -37,9 +36,8 @@
                     <div>
                         <h3 class="main_filter_title">Материал</h3>
 
-                        <a-space class="main_filte r_select">
+                        <a-space>
                             <a-select
-                                style="width: 240px"
                                 :value="materialFilter"
                                 @change="(e: string) => (materialFilter = e)"
                             >
@@ -60,6 +58,7 @@
                         :key="product.id"
                         :productData="product"
                         @updateFavorite="onUpdateFavorite"
+                        @updateBasket="onUpdateBasket"
                     />
                 </section>
             </div>
@@ -68,10 +67,11 @@
 </template>
 
 <script setup lang="ts">
+import { Select } from "@chakra-ui/react";
 import ProductItem from "./components/Product/ProductItem.vue";
-import NavPanel from "./components/views/NavPanel/NavPanel.vue";
-import { ref, computed, onMounted, watchEffect } from "vue";
-import type { Product, HeartsData, FavoriteRecord } from "./types";
+import NavPanel from "./views/NavPanel/NavPanel.vue";
+import { ref, computed, onMounted } from "vue";
+import type { Product, FavoriteRecord, BasketRecord } from "./types";
 
 const ways = ref([
     { id: 1, way: "Главная" },
@@ -122,6 +122,22 @@ const initFavorites = (products: Product[]) => {
 
     localStorage.setItem("favorites", JSON.stringify(initialFavorites));
 };
+const initBasket = (products: Product[]) => {
+    const storedBasket = localStorage.getItem("basket");
+
+    if (storedBasket) return;
+
+    let initialBasket: BasketRecord[] = [];
+
+    for (const product of products) {
+        initialBasket.push({
+            id: product.id,
+            isAdded: false,
+        });
+    }
+
+    localStorage.setItem("basket", JSON.stringify(initialBasket));
+};
 
 const onUpdateFavorite = (id: string, value: boolean) => {
     const storedFavorites = localStorage.getItem("favorites");
@@ -135,11 +151,24 @@ const onUpdateFavorite = (id: string, value: boolean) => {
 
     localStorage.setItem("favorites", JSON.stringify(favorites));
 };
+const onUpdateBasket = (id: string, value: boolean) => {
+    const storedBasket = localStorage.getItem("basket");
+
+    if (!storedBasket) return;
+
+    const basket = JSON.parse(storedBasket) as BasketRecord[];
+
+    const index = basket.findIndex((item) => item.id === id);
+    basket[index].isAdded = value;
+
+    localStorage.setItem("basket", JSON.stringify(basket));
+};
 
 onMounted(() => {
     fetchProducts().then((data) => {
         products.value = data;
         initFavorites(data);
+        initBasket(data);
     });
 });
 </script>
@@ -183,6 +212,7 @@ onMounted(() => {
 .main_filter {
     margin-top: 32px;
     display: flex;
+    gap: 10px;
 }
 .main_filter_title {
     color: var(--Gray-2, #4f4f4f);
@@ -194,9 +224,10 @@ onMounted(() => {
     letter-spacing: 0.36px;
 }
 .main_filter_select {
+    display: flex;
+    gap: 0;
     width: 288px;
     height: 40px;
-    border-radius: 0;
 }
 
 .main_products {
@@ -207,5 +238,182 @@ onMounted(() => {
 }
 .ant-select-selection-item {
     background: var(--Secondary, #f2f2f2);
+}
+.ant-select {
+    width: 288px;
+}
+@media (max-width: 1550px) {
+    .container {
+        max-width: 1550px;
+        margin: 0 13vw;
+    }
+    .product-item {
+        width: 290px;
+    }
+    .main_products {
+        gap: 38px;
+    }
+    .ant-select {
+        width: 260px;
+    }
+}
+
+@media (max-width: 1280px) {
+    .container {
+        max-width: 1280px;
+        margin: 0 12vw;
+    }
+    .product-item {
+        width: 270px;
+    }
+    .main_products {
+        gap: 25px;
+    }
+    .ant-select {
+        width: 260px;
+    }
+}
+
+@media (max-width: 755px) {
+    .container {
+        max-width: 755px;
+        margin: 0 10vw;
+    }
+    .way-list_el:last-child {
+        font-size: 12px;
+        line-height: 12px;
+    }
+    .navigation_item {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 12px;
+    }
+    .main_title {
+        font-size: 28px;
+        font-weight: 600;
+        line-height: 38px;
+    }
+    .product-item {
+        width: 240px;
+    }
+    .main_products {
+        margin-top: 41px;
+        gap: 10px;
+    }
+
+    .ant-select {
+        width: 242px;
+    }
+}
+@media (max-width: 625px) {
+    .container {
+        max-width: 625px;
+        margin: 0 8vw;
+    }
+    .way-list_el:last-child {
+        font-size: 12px;
+        line-height: 14px;
+    }
+    .navigation_item {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 12px;
+    }
+    .main_title {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 34px;
+    }
+    .product-item {
+        width: 190px;
+    }
+    .main_products {
+        margin-top: 20px;
+        gap: 10px;
+    }
+
+    .ant-select {
+        width: 190px;
+    }
+}
+@media (max-width: 500px) {
+    .container {
+        max-width: 500px;
+        margin: 0 6vw;
+    }
+    .way-list {
+        align-items: center;
+    }
+
+    .way-list_el:last-child {
+        font-size: 10px;
+        line-height: 14px;
+        width: 115px;
+    }
+    .navigation_item::after {
+        content: "/";
+        margin: 0 8px;
+    }
+    .navigation_item {
+        width: 65px;
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 12px;
+    }
+    .main_title {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 34px;
+    }
+    .product-item {
+        width: 190px;
+    }
+    .main_products {
+        gap: 10px;
+    }
+
+    .ant-select {
+        width: 190px;
+    }
+}
+@media (max-width: 450px) {
+    .container {
+        max-width: 450px;
+        margin: 0 5vw;
+    }
+    .way-list {
+        align-items: center;
+    }
+
+    .way-list_el:last-child {
+        font-size: 10px;
+        line-height: 14px;
+        width: 115px;
+    }
+    .navigation_item::after {
+        content: "/";
+        margin: 0 8px;
+    }
+    .navigation_item {
+        width: 65px;
+        font-size: 10px;
+        font-weight: 400;
+        line-height: 12px;
+    }
+    .main_title {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 34px;
+    }
+    .product-item {
+        width: 165px;
+    }
+
+    .main_filter {
+        margin-top: 30px;
+    }
+    .ant-select {
+        width: 166px;
+    }
 }
 </style>

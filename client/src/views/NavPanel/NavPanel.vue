@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import type { WayData } from "../../../types";
+import type { WayData } from "../../types";
 const { ways } = defineProps<{
     ways: WayData;
 }>();
