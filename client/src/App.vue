@@ -67,7 +67,6 @@
 </template>
 
 <script setup lang="ts">
-import { Select } from "@chakra-ui/react";
 import ProductItem from "./components/Product/ProductItem.vue";
 import NavPanel from "./views/NavPanel/NavPanel.vue";
 import { ref, computed, onMounted } from "vue";
