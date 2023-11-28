@@ -415,4 +415,39 @@ onMounted(() => {
         width: 166px;
     }
 }
+@media (max-width: 380px) {
+    .container {
+        max-width: 400px;
+        margin: 0 4vw;
+    }
+    .way-list_el {
+        font-size: 10px;
+        line-height: 14px;
+        width: 60px;
+        display: flex;
+        align-items: center;
+    }
+    .way-list_el:last-child {
+        font-size: 10px;
+        line-height: 14px;
+        width: 200px;
+        margin-left: 10px;
+    }
+    .navigation_item::after {
+        content: "/";
+        margin: 0 10px;
+    }
+
+    .main_title {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 32px;
+    }
+    .product-item {
+        width: 150px;
+    }
+    .ant-select {
+        width: 150px;
+    }
+}
 </style>

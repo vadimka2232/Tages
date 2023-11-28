@@ -202,6 +202,9 @@ onMounted(() => {
         width: 140px;
         height: 145px;
     }
+    .product-item_cost_box-active:hover {
+        transform: scale(1.3);
+    }
 }
 @media (max-width: 625px) {
     .product-item_cost_inner_action {
@@ -236,6 +239,9 @@ onMounted(() => {
 
         line-height: 110%;
         letter-spacing: 0.32px;
+    }
+    .product-item_cost_box-active:hover {
+        transform: scale(1.2);
     }
 }
 </style>
