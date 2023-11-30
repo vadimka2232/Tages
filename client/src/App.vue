@@ -19,19 +19,33 @@
                     <div>
                         <h3 class="main_filter_title">Сортировать по:</h3>
 
-                        <a-space>
-                            <a-select
-                                :value="priceFilter"
-                                @change="(e: string) => (priceFilter = e)"
-                            >
-                                <a-select-option value="lowToHigh"
-                                    >Цена по возрастанию</a-select-option
+                        <a-config-provider
+                            :theme="{
+                                token: {
+                                    borderRadius: 0,
+                                    // Alias Token
+                                    colorBgContainer: '#F2F2F2',
+                                    controlHeight: 40,
+                                    fontSize: 14,
+                                    fontFamily: 'SF UI Text',
+                                },
+                            }"
+                        >
+                            <a-space>
+                                <a-select
+                                    :value="priceFilter"
+                                    @change="(e: string) => (priceFilter = e)"
                                 >
-                                <a-select-option value="highToLow"
-                                    >Цена по убыванию</a-select-option
-                                >
-                            </a-select>
-                        </a-space>
+                                    >
+                                    <a-select-option value="lowToHigh"
+                                        >Цена по возрастанию</a-select-option
+                                    >
+                                    <a-select-option value="highToLow"
+                                        >Цена по убыванию</a-select-option
+                                    >
+                                </a-select>
+                            </a-space>
+                        </a-config-provider>
                     </div>
                     <div>
                         <h3 class="main_filter_title">Материал</h3>
@@ -67,11 +81,14 @@
 </template>
 
 <script setup lang="ts">
+import { theme } from "ant-design-vue";
 import ProductItem from "./components/Product/ProductItem.vue";
 import NavPanel from "./views/NavPanel/NavPanel.vue";
 import { ref, computed, onMounted } from "vue";
 import type { Product, FavoriteRecord, BasketRecord } from "./types";
+import styles from "./assets/nav-styles.css";
 
+const { token } = theme.useToken();
 const ways = ref([
     { id: 1, way: "Главная" },
     { id: 2, way: "Системы хранения" },
@@ -177,6 +194,9 @@ onMounted(() => {
     max-width: 1920px;
     margin: 0 214px;
 }
+.ant-select-selection {
+    background-color: green;
+}
 .header {
     margin-top: 32px;
 }
@@ -241,6 +261,12 @@ onMounted(() => {
 }
 .ant-select {
     width: 288px;
+}
+:where(.css-dev-only-do-not-override-1miuosp).ant-select-single:not(
+        .ant-select-customize-input
+    )
+    .ant-select-selector {
+    height: 40px;
 }
 @media (max-width: 1550px) {
     .container {
